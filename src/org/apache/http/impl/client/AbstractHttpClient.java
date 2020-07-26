@@ -68,6 +68,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 
+import org.apache.http.cta.CtaAdapter;
+
 /**
  * Convenience base class for HTTP client implementations.
  *
@@ -557,6 +559,13 @@ public abstract class AbstractHttpClient implements HttpClient {
         }
 
         try {
+            ///M: Support Mom Check @{
+              System.out.println("begin to call ****** send due to user permission");
+            if (!CtaAdapter.isSendingPermitted(request, defaultParams)) {
+                System.out.println("Fail to send due to user permission");
+                return CtaAdapter.returnBadHttpResponse();
+            }
+            ///@}
             return director.execute(target, request, execContext);
         } catch(HttpException httpException) {
             throw new ClientProtocolException(httpException);
